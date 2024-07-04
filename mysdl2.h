@@ -10,7 +10,7 @@
 
 namespace sdl2 {
 
-#pragma pack( push, 1 ) 
+#pragma pack( push, 1 )
 struct Pixel24 {
   Uint8 b, g, r;
   Pixel24(Uint8 r = 255, Uint8 g = 255, Uint8 b = 255)
@@ -131,6 +131,8 @@ struct SDL {
   const Uint8 *keys = nullptr;
   Sint32 numKeys = 0;
   Uint32 keyCounters[SDL_NUM_SCANCODES];
+  Sint32 mouseX, mouseY;
+  Uint32 mouseCounters[8];
 
   bool init(Uint32 w, Uint32 h, bool borderless = true, bool withOpenGL = false);
   void pump();
@@ -142,6 +144,8 @@ struct SDL {
   Pixels lock();
   bool keyDown(Uint8 key);
   bool keyPress(Uint8 key);
+  bool mouseKeyDown(Uint8 key);
+  bool mouseKeyPress(Uint8 key);
 };
 
 }
