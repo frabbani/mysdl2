@@ -142,8 +142,8 @@ struct SDL {
   Uint64 getPerfCounter();
   double getPerfFreq();
   Pixels lock();
-  bool keyDown(Uint8 key);
-  bool keyPress(Uint8 key);
+  bool keyDown(Sint32 key);
+  bool keyPress(Sint32 key);
   bool mouseKeyDown(Uint8 key);
   bool mouseKeyPress(Uint8 key);
 };
