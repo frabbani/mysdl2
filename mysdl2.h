@@ -134,7 +134,7 @@ struct SDL {
   Sint32 mouseX, mouseY;
   Uint32 mouseCounters[8];
 
-  bool init(Uint32 w, Uint32 h, bool borderless = true, bool withOpenGL = false);
+  bool init(Uint32 w, Uint32 h, bool borderless = true, std::string_view title="demo", bool withOpenGL = false);
   void pump();
   void swap();
   void term();

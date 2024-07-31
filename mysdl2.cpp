@@ -302,7 +302,7 @@ Bitmap::~Bitmap() {
   }
 }
 
-bool SDL::init(Uint32 w, Uint32 h, bool borderless, bool withOpenGL) {
+bool SDL::init(Uint32 w, Uint32 h, bool borderless, std::string_view title, bool withOpenGL) {
   if (SDL_Init( SDL_INIT_VIDEO) < 0) {
     printf("could not initialize SDL: %s\n", SDL_GetError());
     return false;
@@ -314,7 +314,7 @@ bool SDL::init(Uint32 w, Uint32 h, bool borderless, bool withOpenGL) {
   Uint32 flags = SDL_WINDOW_SHOWN | (borderless ? SDL_WINDOW_BORDERLESS : 0);
   if (withOpenGL)
     flags |= SDL_WINDOW_OPENGL;
-  win = SDL_CreateWindow("Demo",
+  win = SDL_CreateWindow(title.data(),
   SDL_WINDOWPOS_CENTERED,
                          SDL_WINDOWPOS_CENTERED, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | (borderless ? SDL_WINDOW_BORDERLESS : 0));
   if (!win) {
@@ -352,7 +352,6 @@ void SDL::pump() {
   }
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
-
   }
 }
 
