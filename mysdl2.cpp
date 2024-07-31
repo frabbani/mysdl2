@@ -213,8 +213,7 @@ void Pixels::flip() {
 }
 
 Bitmap::Bitmap(int w, int h, int d, std::string name) {
-  surf = SDL_CreateRGBSurface(0, w, h, d, 0x00ff0000, 0x0000ff00, 0x000000ff,
-                              0xff000000);
+  surf = SDL_CreateRGBSurface(0, w, h, d, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
   if (surf)
     source = std::move(name);
 }
@@ -292,8 +291,7 @@ void Bitmap::unlock() {
 
 void Bitmap::blit(Bitmap &dstBmp, const Rect *srcRect, Rect *dstRect) {
   if (surf && dstBmp.surf)
-    SDL_BlitSurface(surf, static_cast<const SDL_Rect*>(srcRect), dstBmp.surf,
-                    static_cast<SDL_Rect*>(dstRect));
+    SDL_BlitSurface(surf, static_cast<const SDL_Rect*>(srcRect), dstBmp.surf, static_cast<SDL_Rect*>(dstRect));
 }
 
 Bitmap::~Bitmap() {
@@ -316,14 +314,9 @@ bool SDL::init(Uint32 w, Uint32 h, bool borderless, bool withOpenGL) {
   Uint32 flags = SDL_WINDOW_SHOWN | (borderless ? SDL_WINDOW_BORDERLESS : 0);
   if (withOpenGL)
     flags |= SDL_WINDOW_OPENGL;
-  win = SDL_CreateWindow(
-      "Demo",
-      SDL_WINDOWPOS_CENTERED,
-      SDL_WINDOWPOS_CENTERED,
-      w,
-      h,
-      SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
-          | (borderless ? SDL_WINDOW_BORDERLESS : 0));
+  win = SDL_CreateWindow("Demo",
+  SDL_WINDOWPOS_CENTERED,
+                         SDL_WINDOWPOS_CENTERED, w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | (borderless ? SDL_WINDOW_BORDERLESS : 0));
   if (!win) {
     printf("could not create window: %s\n", SDL_GetError());
     return false;
@@ -357,6 +350,10 @@ void SDL::pump() {
     else
       mouseCounters[i] = 0;
   }
+  SDL_Event e;
+  while (SDL_PollEvent(&e)) {
+
+  }
 }
 
 Uint32 SDL::getTicks() {
@@ -389,8 +386,7 @@ Pixels SDL::lock() {
     SDL_LockSurface(surf);
 
   pixels.data = (Uint8*) surf->pixels;
-  pixels.bpp = surf->format->BytesPerPixel == 3 ? 24 :
-               surf->format->BytesPerPixel == 4 ? 32 : 0;
+  pixels.bpp = surf->format->BytesPerPixel == 3 ? 24 : surf->format->BytesPerPixel == 4 ? 32 : 0;
   pixels.w = surf->w;
   pixels.h = surf->h;
   pixels.p = surf->pitch;
