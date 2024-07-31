@@ -21,10 +21,11 @@ void term() {
 
 int main(int argc, char *args[]) {
   setbuf( stdout, NULL);
-  if (!sdl.init( DISP_W, DISP_H, false, true))
-    return 0;
 
-  setbuf( stdout, NULL);
+  if (!sdl.init( DISP_W, DISP_H, false, "Run Boy Run!")) {
+    printf("SDL failed...?\n");
+    return 0;
+  }
 
   double drawTimeInSecs = 0.0;
   Uint32 drawCount = 0.0;
@@ -33,15 +34,14 @@ int main(int argc, char *args[]) {
   auto start = sdl.getTicks();
   auto last = start;
   init();
-  while (true) {
-    sdl.pump();
-    if (sdl.keyDown(SDLK_ESCAPE))
-      break;
 
+  while (true) {
     auto now = sdl.getTicks();
     auto elapsed = now - last;
-
+    if (sdl.keyDown(SDLK_ESCAPE))
+      break;
     if (elapsed >= 20) {
+      sdl.pump();
       step();
       last = (now / 20) * 20;
     }
@@ -57,6 +57,7 @@ int main(int argc, char *args[]) {
            (float) ((drawTimeInSecs * 1e3) / (double) drawCount));
 
   sdl.term();
+
   printf("goodbye!\n");
   return 0;
 }
