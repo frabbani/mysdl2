@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_image.h>
 
 #include <string>
 #include <vector>
@@ -118,7 +119,8 @@ struct Bitmap {
   bool locked();
   void lock();
   void unlock();
-  void save(const char *bmpFile);
+  void save(std::string_view bmpFile);
+  void savePNG(std::string_view pngFile);
   void blit(Bitmap &dstBmp, const Rect *srcRect = nullptr, Rect *dstRect = nullptr);
 };
 
@@ -133,8 +135,9 @@ struct SDL {
   Uint32 keyCounters[SDL_NUM_SCANCODES];
   Sint32 mouseX, mouseY;
   Uint32 mouseCounters[8];
+  Uint32 screenshot = 0;
 
-  bool init(Uint32 w, Uint32 h, bool borderless = true, std::string_view title="demo", bool withOpenGL = false);
+  bool init(Uint32 w, Uint32 h, bool borderless = true, std::string_view title = "demo", bool withOpenGL = false);
   void pump();
   void swap();
   void term();
@@ -146,6 +149,7 @@ struct SDL {
   bool keyPress(Sint32 key);
   bool mouseKeyDown(Uint8 key);
   bool mouseKeyPress(Uint8 key);
+  void takeScreenshot();
 };
 
 }

@@ -237,9 +237,14 @@ Bitmap::Bitmap(const std::vector<Uint8> &bmpData, std::string name) {
     source = std::move(name);
 }
 
-void Bitmap::save(const char *bmpFile) {
-  if (surf && bmpFile)
-    SDL_SaveBMP(surf, bmpFile);
+void Bitmap::save(std::string_view bmpFile) {
+  if (surf && bmpFile.data())
+    SDL_SaveBMP(surf, bmpFile.data());
+}
+
+void Bitmap::savePNG(std::string_view pngFile) {
+  if (surf && pngFile.data())
+    IMG_SavePNG(surf, pngFile.data());
 }
 
 int Bitmap::width() {
@@ -417,3 +422,8 @@ bool SDL::mouseKeyPress(Uint8 key) {
   return mouseCounters[key & 0x08] == 1;
 }
 
+void SDL::takeScreenshot() {
+  std::string fileName = "screenshot" + std::to_string(screenshot) + ".png";
+  IMG_SavePNG(surf, fileName.c_str());
+  screenshot++;
+}
