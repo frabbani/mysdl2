@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <string>
 #include <vector>
@@ -122,6 +123,15 @@ struct Bitmap {
   void save(std::string_view bmpFile);
   void savePNG(std::string_view pngFile);
   void blit(Bitmap &dstBmp, const Rect *srcRect = nullptr, Rect *dstRect = nullptr);
+};
+
+struct Font {
+  TTF_Font *font = nullptr;
+  std::vector<SDL_Surface*> glyphs;
+  Font(std::string_view path, int size);
+  void render(SDL_Surface *dest, int x, int y, std::string_view text, Pixel24 color, bool upsideDown = false);
+  void render(Pixels &bg, int x, int y, std::string_view text, Pixel24 color);
+  ~Font();
 };
 
 struct SDL {
