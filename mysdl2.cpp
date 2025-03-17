@@ -505,14 +505,18 @@ bool SDL::keyPress(Sint32 key) {
 }
 
 bool SDL::mouseKeyDown(Uint8 key) {
-  return mouseCounters[key & 0x08] > 0;
+  return mouseCounters[key & 0x07] > 0;
 }
 bool SDL::mouseKeyPress(Uint8 key) {
-  return mouseCounters[key & 0x08] == 1;
+  return mouseCounters[key & 0x07] == 1;
 }
 
 void SDL::takeScreenshot() {
   std::string fileName = "screenshot" + std::to_string(screenshot) + ".png";
   IMG_SavePNG(surf, fileName.c_str());
   screenshot++;
+}
+
+void SDL::warpMouse(Sint32 x, Sint32 y) {
+  SDL_WarpMouseInWindow(win, x, y);
 }

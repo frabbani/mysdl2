@@ -144,6 +144,7 @@ struct SDL {
   Sint32 numKeys = 0;
   Uint32 keyCounters[SDL_NUM_SCANCODES];
   Sint32 mouseX, mouseY;
+  bool warpSnap = false;
   Uint32 mouseCounters[8];
   Uint32 screenshot = 0;
 
@@ -159,6 +160,7 @@ struct SDL {
   bool keyPress(Sint32 key);
   bool mouseKeyDown(Uint8 key);
   bool mouseKeyPress(Uint8 key);
+  void warpMouse(Sint32 x, Sint32 y);
   void takeScreenshot();
 };
 
