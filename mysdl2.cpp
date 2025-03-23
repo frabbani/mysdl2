@@ -376,11 +376,21 @@ void Font::render(Pixels &dest, int x, int y, std::string_view text, Pixel24 col
       continue;
     Uint8 *glpyhData = reinterpret_cast<Uint8*>(glyph->pixels);
 
-    for (int y = 0; y < glyph->h; y++) {
-      for (int x = 0; x < glyph->w; x++) {
-        Uint8 mask = glpyhData[(dest.inverted ? glyph->h - y - 1 : y) * glyph->pitch + x];
-        if (mask)
-          dest.plot(xPos + x, yPos + y, color);
+    if (dest.inverted) {
+      for (int y = 0; y < glyph->h; y++) {
+        for (int x = 0; x < glyph->w; x++) {
+          Uint8 mask = glpyhData[(glyph->h - y - 1) * glyph->pitch + x];
+          if (mask)
+            dest.plot(xPos + x, yPos + y, color);
+        }
+      }
+    } else {
+      for (int y = 0; y < glyph->h; y++) {
+        for (int x = 0; x < glyph->w; x++) {
+          Uint8 mask = glpyhData[y * glyph->pitch + x];
+          if (mask)
+            dest.plot(xPos + x, yPos + y, color);
+        }
       }
     }
     xPos += glyph->w;
@@ -394,6 +404,54 @@ Font::~Font() {
     TTF_CloseFont(font);
     font = nullptr;
   }
+}
+
+bool FontAtlas::create(const Font &font) {
+  if (!font.font || font.glyphs.empty())
+    return false;
+
+  const size_t maxGlyphs = (size_t) '~' - (size_t) ' ' + 1;
+
+  if (glyphAtlas)
+    SDL_FreeSurface(glyphAtlas);
+  glyphRects.clear();
+
+  int maxW = 0;
+  int maxH = 0;
+  for (auto g : font.glyphs) {
+    maxW = std::max(maxW, g->w);
+    maxH = std::max(maxH, g->h);
+  }
+  if (maxW & 0x01)
+    maxW++;
+  if (maxH & 0x01)
+    maxH++;
+
+  glyphAtlas = SDL_CreateRGBSurface(0, maxW, maxH * maxGlyphs, 32, 0, 0, 0, 0);
+  if (!glyphAtlas)
+    return false;
+  SDL_FillRect(glyphAtlas, nullptr, 0);
+
+  int i = 0;
+  for (auto g : font.glyphs) {
+    int xOffset = (maxW - g->w) / 2;
+    int yOffset = (maxH - g->h) / 2;
+    Rect rect;
+    rect.x = xOffset;
+    rect.y = yOffset + i * maxH;
+    rect.w = g->w;
+    rect.h = g->h;
+    glyphRects.push_back(rect);
+    SDL_BlitSurface(g, nullptr, glyphAtlas, &rect);
+    i++;
+  }
+
+  return !glyphRects.empty();
+}
+
+FontAtlas::~FontAtlas() {
+  if (glyphAtlas)
+    SDL_FreeSurface(glyphAtlas);
 }
 
 bool SDL::init(Uint32 w, Uint32 h, bool borderless, std::string_view title, bool withOpenGL) {

@@ -134,6 +134,14 @@ struct Font {
   ~Font();
 };
 
+struct FontAtlas {
+  SDL_Surface *glyphAtlas = nullptr;
+  std::vector<Rect> glyphRects;
+  void text(std::string_view str, std::vector<Rect> &rects);
+  bool create(const Font &font);
+  ~FontAtlas();
+};
+
 struct SDL {
 
   bool inited = false;
