@@ -430,6 +430,9 @@ bool SDL::init(Uint32 w, Uint32 h, bool borderless, std::string_view title,
     printf("SDL initialized\n");
 
   inited = true;
+  if (TTF_Init() == -1) {
+    printf("could not initialize TTF: %s\n", TTF_GetError());
+  }
 
   Uint32 flags = SDL_WINDOW_SHOWN | (borderless ? SDL_WINDOW_BORDERLESS : 0);
   if (withOpenGL) flags |= SDL_WINDOW_OPENGL;
@@ -484,6 +487,7 @@ void SDL::term() {
     SDL_DestroyWindow(win);
     win = nullptr;
   }
+  TTF_Quit();
   if (inited) {
     SDL_Quit();
     inited = false;
