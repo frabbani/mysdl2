@@ -422,7 +422,7 @@ FontAtlas::~FontAtlas() {
 }
 
 bool SDL::init(Uint32 w, Uint32 h, bool borderless, std::string_view title,
-               bool withOpenGL) {
+               bool withOpenGL, int display) {
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     printf("could not initialize SDL: %s\n", SDL_GetError());
     return false;
@@ -436,10 +436,20 @@ bool SDL::init(Uint32 w, Uint32 h, bool borderless, std::string_view title,
 
   Uint32 flags = SDL_WINDOW_SHOWN | (borderless ? SDL_WINDOW_BORDERLESS : 0);
   if (withOpenGL) flags |= SDL_WINDOW_OPENGL;
-  win = SDL_CreateWindow(title.data(), SDL_WINDOWPOS_CENTERED,
-                         SDL_WINDOWPOS_CENTERED, w, h,
-                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN |
-                             (borderless ? SDL_WINDOW_BORDERLESS : 0));
+
+  SDL_Rect displayBounds;
+  if (SDL_GetDisplayBounds(display, &displayBounds) < 0) {
+    printf("could not get display bounds for display %d: %s\n", display,
+           SDL_GetError());
+    displayBounds.x = SDL_WINDOWPOS_CENTERED;
+    displayBounds.y = SDL_WINDOWPOS_CENTERED;
+  } else {
+    displayBounds.x += (displayBounds.w - w) / 2;
+    displayBounds.y += (displayBounds.h - h) / 2;
+  }
+
+  win = SDL_CreateWindow(title.data(), displayBounds.x, displayBounds.y, w, h,
+                         flags);
   if (!win) {
     printf("could not create window: %s\n", SDL_GetError());
     return false;

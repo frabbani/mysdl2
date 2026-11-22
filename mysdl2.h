@@ -137,7 +137,8 @@ struct SDL {
   Uint32 screenshot = 0;
 
   bool init(Uint32 w, Uint32 h, bool borderless = true,
-            std::string_view title = "demo", bool withOpenGL = false);
+            std::string_view title = "demo", bool withOpenGL = false,
+            int display = 0);
   void pump();
   void swap();
   void term();
